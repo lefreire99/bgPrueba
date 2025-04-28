@@ -9,10 +9,12 @@ namespace bgPrueba.Server.Services
     public class ProductoService : IProductoService
     {
         private readonly ApplicationContext _applicationContext;
+        private readonly ILogger<ProductoService> _logger;
 
-        public ProductoService(ApplicationContext applicationContext)
+        public ProductoService(ApplicationContext applicationContext, ILogger<ProductoService> logger)
         {
             _applicationContext = applicationContext;
+            _logger = logger;
         }
 
         public IEnumerable<GetProducto> GetProductos()
@@ -88,6 +90,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }
@@ -147,6 +150,7 @@ namespace bgPrueba.Server.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }
@@ -181,6 +185,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }

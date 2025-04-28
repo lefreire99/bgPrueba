@@ -9,10 +9,12 @@ namespace bgPrueba.Server.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<UsuarioService> _logger;
 
-        public UsuarioService(UserManager<IdentityUser> userManager)
+        public UsuarioService(UserManager<IdentityUser> userManager, ILogger<UsuarioService> logger)
         {
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<Response> CreateUsuario(Usuario model)
@@ -80,6 +82,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }

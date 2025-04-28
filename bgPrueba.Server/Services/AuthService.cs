@@ -15,12 +15,14 @@ namespace bgPrueba.Server.Services
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IConfiguration configuration, ILogger<AuthService> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<AuthResponse> Login(LoginInterface model)
@@ -32,12 +34,14 @@ namespace bgPrueba.Server.Services
                 if (usuario_exist == null)
                 {
                     response.setError("Usuario no encontrado.");
+                    _logger.LogError($"Personalized: Usuario no encontrado");
                     return response;
                 }
 
                 if(usuario_exist.UserName == null)
                 {
                     response.setError("Username del usuario no ha sido definido.");
+                    _logger.LogError($"Personalized: Username del usuario no ha sido definido");
                     return response;
                 }
 
@@ -73,16 +77,19 @@ namespace bgPrueba.Server.Services
                     };
 
                     response.setSuccess("Login realizado correctamente",usuario);
+                    _logger.LogInformation($"Personalized: Usuario autenticado");
                 }
                 else
                 {
                     response.setError("No ha sido posible validar el usuario. Contraseña incorrecta.");
+                    _logger.LogError($"Personalized: Contraseña incorrecta");
                 }
 
                 return response;
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.setError("Error logeando el usuario.");
                 return response;
             }
@@ -98,8 +105,9 @@ namespace bgPrueba.Server.Services
                 response.setObjectResponse("S", "Logout realizado con exito.", true);
                 return response;
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.setObjectResponse("E", "Logout realizado con exito.", true);
                 return response;
             }

@@ -10,10 +10,12 @@ namespace bgPrueba.Server.Services
     public class CategoriaService : ICategoriaService
     {
         private readonly ApplicationContext _applicationContext;
+        private readonly ILogger<CategoriaService> _logger;
 
-        public CategoriaService(ApplicationContext applicationContext)
+        public CategoriaService(ApplicationContext applicationContext, ILogger<CategoriaService> logger)
         {
             _applicationContext = applicationContext;
+            _logger = logger;
         }
 
         public IEnumerable<OptionInterface> GetCategoriasOptions()
@@ -60,6 +62,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }

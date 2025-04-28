@@ -8,10 +8,11 @@ namespace bgPrueba.Server.Services
     public class RolService : IRolService
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-
-        public RolService(RoleManager<IdentityRole> roleManager)
+        private readonly ILogger<RolService> _logger;
+        public RolService(RoleManager<IdentityRole> roleManager, ILogger<RolService> logger)
         {
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         public async Task<Response> CreateRol(Rol model)
@@ -39,6 +40,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }

@@ -8,10 +8,11 @@ namespace bgPrueba.Server.Services
     public class ProductoMovimientoService : IProductoMovimientoService
     {
         private readonly ApplicationContext _applicationContext;
-
-        public ProductoMovimientoService(ApplicationContext applicationContext)
+        private readonly ILogger<ProductoMovimientoService> _logger;
+        public ProductoMovimientoService(ApplicationContext applicationContext, ILogger<ProductoMovimientoService> logger)
         {
             _applicationContext = applicationContext;
+            _logger = logger;
         }
 
         public async Task<ObjectResponse> GetMovimientosByProductoId(int id)
@@ -46,6 +47,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.setError("Error en el servidor");
                 return response;
             }
@@ -108,6 +110,7 @@ namespace bgPrueba.Server.Services
             }
             catch(Exception ex)
             {
+                _logger.LogError($"Personalized: {ex.Message}");
                 response.SetServerError();
                 return response;
             }
