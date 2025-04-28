@@ -69,7 +69,7 @@ const Movimientos = (props) => {
         <div className="container">
             <h4>Historial de movimientos del producto: {producto}</h4>
             <div className="mt-3">
-                <div className="d-flex" role="search">
+                <div className="d-flex flex-column flex-md-row" role="search">
                     <input className="form-control me-auto w-50" type="text" placeholder='Filtrar'
                         value={filterText}
                         onChange={(e) => setFilterText(e.target.value)} aria-label="Search" />

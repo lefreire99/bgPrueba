@@ -80,7 +80,7 @@ const Producto = (props) => {
     const handleMovimientos = (data) => {
         const id = data.id;
         navigate('/panel/productos/movimientos/' + id, { state: { id: id } })
-      }
+    }
 
     return (
         <div className="container">
@@ -93,7 +93,7 @@ const Producto = (props) => {
                         {listProductos.length > 0 ? (
                             <>
                                 <ProductoContext.Provider value={{ handleModal, handleMovimientos }}>
-                                    <Table list={currentItems} headers={headers} renderers={renderers} hasActions={true} TableDropdown={GeneralTableDropdown} hasNumber={true} currentPage={currentPage} itemsPerPage={itemsPerPage}/>
+                                    <Table list={currentItems} headers={headers} renderers={renderers} hasActions={true} TableDropdown={GeneralTableDropdown} hasNumber={true} currentPage={currentPage} itemsPerPage={itemsPerPage} />
                                 </ProductoContext.Provider>
                                 <Pagination onPageChange={paginate} currentPage={currentPage} totalCount={filter.length} pageSize={itemsPerPage} perPage={perPage} />
                             </>
@@ -150,16 +150,29 @@ const GeneralTableDropdown = (props) => {
 
     return (
         <div className="dropdown">
-            <ThreeDotsVertical data-bs-toggle="dropdown" aria-expanded="false" />
-            <ul className="dropdown-menu">
+            <button
+                className="btn btn-link p-0 border-0 text-dark"
+                type="button"
+                id={`dropdownMenuButton-${elem.id}`}
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
+                <ThreeDotsVertical />
+            </button>
+
+            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby={`dropdownMenuButton-${elem.id}`}>
                 <li>
-                    <button type="button" className="dropdown-item" onClick={() => { handleModal(elem, "E") }}><PencilSquare /> Editar</button>
+                    <button type="button" className="dropdown-item" onClick={() => handleModal(elem, "E")}>
+                        <PencilSquare /> Editar
+                    </button>
                 </li>
                 <li>
-                    <button type="button" className="dropdown-item" onClick={() => { handleMovimientos(elem) }}><BoxArrowRight /> Historial de Movimientos</button>
+                    <button type="button" className="dropdown-item" onClick={() => handleMovimientos(elem)}>
+                        <BoxArrowRight /> Historial de Movimientos
+                    </button>
                 </li>
                 <li>
-                    <button type="button" className="dropdown-item" onClick={() => { handleModal(elem, "D") }}>
+                    <button type="button" className="dropdown-item" onClick={() => handleModal(elem, "D")}>
                         <XCircle /> Eliminar
                     </button>
                 </li>
@@ -203,45 +216,51 @@ export const ProductoFilter = (props) => {
 
     return (
         <>
-            <div className="row">
-                <div className="col-md-2">
-                    <div className="d-flex">
-                        <h5 className="mt-3"><Funnel /> Filtros</h5>
-                        <button type="button" className="btn btn-link mt-2" onClick={() => { setShowFilters(!showFilters) }}>
+            <div className="row align-items-center">
+                <div className="col-12 col-md-6 col-lg-2 mb-2 mb-lg-0">
+                    <div className="d-flex align-items-center">
+                        <h5 className="mb-0"><Funnel /> Filtros</h5>
+                        <button type="button" className="btn btn-link p-0 ms-2" onClick={() => setShowFilters(!showFilters)}>
                             {!showFilters ? (<PlusCircle />) : (<DashCircle />)}
                         </button>
                     </div>
                 </div>
-                <div className="col-md-10">
-                    <div className="d-flex justify-content-end mt-2" role="search">
-                        <button className="btn btn-primary ms-3" type="button" onClick={() => { handleModal(undefined, "C") }}><PlusCircle /> Crear Producto</button>
+
+                <div className="col-12 col-md-6 col-lg-10">
+                    <div className="d-flex justify-content-end">
+                        <button className="btn btn-primary" type="button" onClick={() => handleModal(undefined, "C")}>
+                            <PlusCircle /> Crear Producto
+                        </button>
                     </div>
                 </div>
             </div>
-            <div className="border-top mt-3">
-                <div className="d-flex mt-3">
-                    <div className="w-50">
-                        <label htmlFor="searchInput4">Nombre</label>
-                        <input className="form-control w-100" id="searchInput4" type="text" onChange={(e) => setNombre(e.target.value)} value={nombre} placeholder='Nombre' />
+
+            <div className="border-top mt-4 pt-3">
+                <div className="row g-3">
+                    <div className="col-12 col-md-6">
+                        <label htmlFor="searchInput4" className="form-label">Nombre</label>
+                        <input className="form-control" id="searchInput4" type="text" onChange={(e) => setNombre(e.target.value)} value={nombre} placeholder="Nombre" />
                     </div>
                 </div>
+
                 {showFilters && (
-                    <div className="d-flex mt-3">
-                        <div className="w-50">
-                            <label htmlFor="searchInput1">Categoria</label>
-                            <input className="form-control w-100" id="searchInput1" onChange={(e) => setCategoria(e.target.value)} value={categoria} type="text" placeholder='Categoría' />
+                    <div className="row g-3 mt-1">
+                        <div className="col-12 col-md-4">
+                            <label htmlFor="searchInput1" className="form-label">Categoría</label>
+                            <input className="form-control" id="searchInput1" type="text" onChange={(e) => setCategoria(e.target.value)} value={categoria} placeholder="Categoría" />
                         </div>
-                        <div className="w-50 ms-2">
-                            <label htmlFor="searchInput">Precio</label>
-                            <input className="form-control w-100" id="searchInput" onChange={(e) => setPrecio(e.target.value)} value={precio} type="text" placeholder='Precio' />
+                        <div className="col-12 col-md-4">
+                            <label htmlFor="searchInput" className="form-label">Precio</label>
+                            <input className="form-control" id="searchInput" type="text" onChange={(e) => setPrecio(e.target.value)} value={precio} placeholder="Precio" />
                         </div>
-                        <div className="w-50 ms-2">
-                            <label htmlFor="searchInput2">Estado</label>
-                            <input className="form-control w-100" id="searchInput2" onChange={(e) => setEstado(e.target.value)} value={estado} type="text" placeholder='Estado' />
+                        <div className="col-12 col-md-4">
+                            <label htmlFor="searchInput2" className="form-label">Estado</label>
+                            <input className="form-control" id="searchInput2" type="text" onChange={(e) => setEstado(e.target.value)} value={estado} placeholder="Estado" />
                         </div>
                     </div>
                 )}
             </div>
+
         </>
     );
 }

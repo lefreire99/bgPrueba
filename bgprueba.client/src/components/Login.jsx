@@ -56,34 +56,61 @@ const Login = (props) => {
     }
 
     return (
-        <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
-            <div className="card shadow p-4" style={{ width: "22rem" }}>
-                <h2 className="text-center mb-4">Login</h2>
+        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+            <div className="row w-100">
+                <div className="col-12 col-sm-8 col-md-6 col-lg-4 mx-auto">
+                    <div className="card shadow p-4">
+                        <h2 className="text-center mb-4">Login</h2>
 
-                <div className="form-group mb-3">
-                    <label htmlFor="email" className="form-label">
-                        Correo Electrónico
-                    </label>
-                    <input type="email" className="form-control" onChange={handleChange} id="email" name="email" placeholder="Ingrese correo electrónico" />
-                </div>
-                <div className="form-group mb-3">
-                    <label htmlFor="password" className="form-label">
-                        Contraseña
-                    </label>
-                    <input type="password" className="form-control" onChange={handleChange} id="password" name="password" placeholder="Ingrese contraseña" />
-                </div>
-                {generalError && (
-                    <div className="mt-3">
-                        <Alert tipo={"danger"}><ExclamationCircle /> {generalError}</Alert>
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">
+                                Correo Electrónico
+                            </label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                onChange={handleChange}
+                                id="email"
+                                name="email"
+                                placeholder="Ingrese correo electrónico"
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">
+                                Contraseña
+                            </label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                onChange={handleChange}
+                                id="password"
+                                name="password"
+                                placeholder="Ingrese contraseña"
+                            />
+                        </div>
+
+                        {generalError && (
+                            <div className="mt-3">
+                                <Alert tipo={"danger"}>
+                                    <ExclamationCircle /> {generalError}
+                                </Alert>
+                            </div>
+                        )}
+
+                        <button
+                            type="button"
+                            className="btn btn-primary w-100 mt-3"
+                            onClick={handleSubmit}
+                            disabled={loadingLogin}
+                        >
+                            {loadingLogin && (
+                                <span className="spinner-border spinner-border-sm me-2"></span>
+                            )}
+                            Login
+                        </button>
                     </div>
-                )}
-                <button type="button" className="btn btn-primary w-100" onClick={handleSubmit} disabled={loadingLogin}>
-                    {loadingLogin && (
-                        <span className="spinner-border spinner-border-sm"></span>
-                    )}
-                    Login
-                </button>
-
+                </div>
             </div>
         </div>
     );
