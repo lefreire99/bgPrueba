@@ -1,5 +1,6 @@
 ﻿using bgPrueba.Server.ActionModels;
 using bgPrueba.Server.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bgPrueba.Server.Controllers
@@ -17,7 +18,7 @@ namespace bgPrueba.Server.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        //[Authorize(Roles = "DIRECTOR DE PROYECTO,ASISTENTE DE PROYECTO,COORDINADOR POA")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRol([FromBody] Rol model)
         {
             var res = await _rolService.CreateRol(model);

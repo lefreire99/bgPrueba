@@ -18,7 +18,7 @@ namespace bgPrueba.Server.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        //[Authorize(Roles = "DIRECTOR DE PROYECTO,ASISTENTE DE PROYECTO,COORDINADOR POA")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUsuario([FromBody] Usuario model)
         {
             var res = await _usuarioService.CreateUsuario(model);

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { instance } from "../common/Interceptor";
+import { authHeader } from "./auth.header";
 
-const API_URL = "http://localhost:5238/api/Categoria/";
+const API_URL = import.meta.env.VITE_API_URL + "/api/Categoria/";
 
 const getCategoriasOptions = async () => {
     try {

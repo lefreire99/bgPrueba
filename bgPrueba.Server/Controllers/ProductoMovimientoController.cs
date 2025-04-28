@@ -1,5 +1,6 @@
 ﻿using bgPrueba.Server.ActionModels;
 using bgPrueba.Server.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bgPrueba.Server.Controllers
@@ -15,9 +16,22 @@ namespace bgPrueba.Server.Controllers
             _productoMovimientoService = productoMovimientoService;
         }
 
+        [HttpGet]
+        [Route("[action]/{id}")]
+        [Authorize(Roles = "Admin,Guardalmacen")]
+        public async Task<IActionResult> GetMovimientosByProductoId(int id)
+        {
+            var res = await _productoMovimientoService.GetMovimientosByProductoId(id);
+            if (res.Status == "Error")
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, res);
+            }
+            return Ok(res);
+        }
+
         [HttpPost]
         [Route("[action]")]
-        //[Authorize(Roles = "DIRECTOR DE PROYECTO,ASISTENTE DE PROYECTO,COORDINADOR POA")]
+        [Authorize(Roles = "Admin,Guardalmacen")]
         public async Task<IActionResult> RegisterEntradaSalida([FromBody] ProductoMovimientoInterface model)
         {
             var res = await _productoMovimientoService.RegisterEntradaSalida(model);

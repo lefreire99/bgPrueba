@@ -1,7 +1,7 @@
 import axios from "axios";
 import { instance } from "../common/Interceptor";
 
-const API_URL = "http://localhost:5238/api/Auth/";
+const API_URL = import.meta.env.VITE_API_URL + "/api/Auth/";
 
 const login = async (email, password) => {
     try {

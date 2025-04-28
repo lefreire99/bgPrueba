@@ -5,38 +5,49 @@ import * as yup from "yup"
 import Alert from "./Alert";
 import AuthService from "../Services/auth.service";
 import { useNavigate } from "react-router";
+import { ExclamationCircle } from "react-bootstrap-icons";
+import { ErrorMessage } from "./ErrorMessage";
+import { inputStyle } from "../utils/functions";
 
 const Login = (props) => {
     const [loadingLogin, setLoadingLogin] = useState(false);
     const [generalError, setGeneralError] = useState();
+    const [usuario, setUsuario] = useState({
+        email: "",
+        password: ""
+    })
 
     const navigate = useNavigate();
 
-    const schema = yup
-        .object({
-            email: yup.string().required(),
-            password: yup.string().required(),
-        })
-        .required()
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(schema),
-    })
+    const handleChange = (e) => {
+        const name = e.target.name;
+        const valor = e.target.value;
+        setUsuario(prev => ({ ...prev, [name]: valor }));
+    }
 
-    const onSubmit = async (data) => {
+    const handleSubmit = async () => {
         try {
-            const { email, password } = data;
+            const { email, password } = usuario;
             setLoadingLogin(true);
-            const response = await AuthService.login(email, password);
-            setLoadingLogin(false);
-            if (response) {
-                navigate("/panel");
-                window.location.reload();
+            if (email && email != "") {
+                if (password && password != "") {
+                    setGeneralError();
+                    const response = await AuthService.login(email, password);
+                    console.log(response);
+                    setLoadingLogin(false);
+                    if (response) {
+                        navigate("/panel");
+                        window.location.reload();
+                    } else {
+                        setGeneralError("No ha sido posible validar el usuario. Revisar email y contraseña.");
+                    }
+                } else {
+                    setGeneralError("Contraseña es requerida.")
+                    setLoadingLogin(false);
+                }
             } else {
-                setGeneralError("Error");
+                setGeneralError("Email es requerido.")
+                setLoadingLogin(false);
             }
         } catch (error) {
             setLoadingLogin(false);
@@ -48,34 +59,31 @@ const Login = (props) => {
         <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
             <div className="card shadow p-4" style={{ width: "22rem" }}>
                 <h2 className="text-center mb-4">Login</h2>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">
-                            Correo Electrónico
-                        </label>
-                        <input type="email" className="form-control" id="email" {...register("email", { required: true })} placeholder="Ingrese correo electrónico" />
+
+                <div className="form-group mb-3">
+                    <label htmlFor="email" className="form-label">
+                        Correo Electrónico
+                    </label>
+                    <input type="email" className="form-control" onChange={handleChange} id="email" name="email" placeholder="Ingrese correo electrónico" />
+                </div>
+                <div className="form-group mb-3">
+                    <label htmlFor="password" className="form-label">
+                        Contraseña
+                    </label>
+                    <input type="password" className="form-control" onChange={handleChange} id="password" name="password" placeholder="Ingrese contraseña" />
+                </div>
+                {generalError && (
+                    <div className="mt-3">
+                        <Alert tipo={"danger"}><ExclamationCircle /> {generalError}</Alert>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">
-                            Contraseña
-                        </label>
-                        <input type="password" className="form-control" id="password" {...register("password", { required: true })} placeholder="Ingrese contraseña" />
-                    </div>
-                    {generalError && (
-                        <div className="d-flex">
-                            <Alert tipo={"danger"}>{generalError}</Alert>
-                        </div>
+                )}
+                <button type="button" className="btn btn-primary w-100" onClick={handleSubmit} disabled={loadingLogin}>
+                    {loadingLogin && (
+                        <span className="spinner-border spinner-border-sm"></span>
                     )}
-                    <button type="submit" className="btn btn-primary w-100">
-                        {loadingLogin && (
-                            <span className="spinner-border spinner-border-sm"></span>
-                        )}
-                        Login
-                    </button>
-                </form>
-                {/*<div className="mt-3 text-center">
-                    <small className="text-muted">Don't have an account? Sign up</small>
-                </div>*/}
+                    Login
+                </button>
+
             </div>
         </div>
     );

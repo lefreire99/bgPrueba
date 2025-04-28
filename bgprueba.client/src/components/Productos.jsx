@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { ThreeDotsVertical, PlusCircle, InfoCircle, PencilSquare, CheckCircle, SlashCircle, FileEarmarkArrowDown, Funnel, DashCircle, XCircle } from 'react-bootstrap-icons';
+import { ThreeDotsVertical, PlusCircle, InfoCircle, PencilSquare, CheckCircle, SlashCircle, FileEarmarkArrowDown, Funnel, DashCircle, XCircle, BoxArrowRight } from 'react-bootstrap-icons';
 import Alert from "./Alert";
 import Pagination from "./Pagination";
 import { ProductoContext } from "./ProductoContext";
@@ -10,6 +10,7 @@ import { headers, renderers } from "./producto-info";
 import CategoriaService from "../Services/categoria.service";
 import ProductoModal from "./productos_components/ProductoModal";
 import DeleteModal from "./productos_components/DeleteModal";
+import { useNavigate } from "react-router";
 
 const Producto = (props) => {
 
@@ -27,6 +28,8 @@ const Producto = (props) => {
     const currentItems = filter?.slice(indexOfFirstItem, indexOfLastItem)
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const perPage = (amount) => setItemsPerPage(amount);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getProductos = async () => {
@@ -74,6 +77,11 @@ const Producto = (props) => {
         setShowModal(true);
     }
 
+    const handleMovimientos = (data) => {
+        const id = data.id;
+        navigate('/panel/productos/movimientos/' + id, { state: { id: id } })
+      }
+
     return (
         <div className="container">
             <h4>Administrador de Items</h4>
@@ -84,8 +92,8 @@ const Producto = (props) => {
                     <>
                         {listProductos.length > 0 ? (
                             <>
-                                <ProductoContext.Provider value={{ handleModal, DeleteModal }}>
-                                    <Table list={currentItems} headers={headers} renderers={renderers} hasActions={true} TableDropdown={GeneralTableDropdown} />
+                                <ProductoContext.Provider value={{ handleModal, handleMovimientos }}>
+                                    <Table list={currentItems} headers={headers} renderers={renderers} hasActions={true} TableDropdown={GeneralTableDropdown} hasNumber={true} currentPage={currentPage} itemsPerPage={itemsPerPage}/>
                                 </ProductoContext.Provider>
                                 <Pagination onPageChange={paginate} currentPage={currentPage} totalCount={filter.length} pageSize={itemsPerPage} perPage={perPage} />
                             </>
@@ -138,7 +146,7 @@ const Producto = (props) => {
 
 const GeneralTableDropdown = (props) => {
     const { elem } = props;
-    const { handleModal, DeleteModal } = useContext(ProductoContext);
+    const { handleModal, handleMovimientos } = useContext(ProductoContext);
 
     return (
         <div className="dropdown">
@@ -146,6 +154,9 @@ const GeneralTableDropdown = (props) => {
             <ul className="dropdown-menu">
                 <li>
                     <button type="button" className="dropdown-item" onClick={() => { handleModal(elem, "E") }}><PencilSquare /> Editar</button>
+                </li>
+                <li>
+                    <button type="button" className="dropdown-item" onClick={() => { handleMovimientos(elem) }}><BoxArrowRight /> Historial de Movimientos</button>
                 </li>
                 <li>
                     <button type="button" className="dropdown-item" onClick={() => { handleModal(elem, "D") }}>

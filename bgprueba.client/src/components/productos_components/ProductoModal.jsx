@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import Select from 'react-select';
-import { ExclamationCircle } from 'react-bootstrap-icons';
 import * as Yup from "yup";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,29 +13,22 @@ import { notifyError } from "../Notifications";
 const ProductoModal = (props) => {
     const { show, handleClose, handleChange, modalTitle, data, isEdit, categorias } = props;
     const [loadingGuardar, setLoadingGuardar] = useState(false);
-
-    const generalSchema = Yup.object({
-        value: Yup.number().required("Field Required"),
-        label: Yup.string().required("Field Required"),
-    })
-
-    const validationSchema = Yup.object().shape({
-        nombre: Yup.string().required("Nombre requerido."),
-        descripcion: Yup.string().required("Descripción requerida."),
-        precio: Yup.string().required("Precio requerido."),
-        cantidad: Yup.string().notRequired(),
-        categoria: generalSchema.typeError('Categoría requerido.'),
-    });
+    const errorsAdd = {
+        nombre: "Nombre es requerido",
+        precio: "Precio es requerido",
+        cantidad: "Cantidad es requerida",
+        categoria: "Categoria es requerida"
+    };
+    const [generalError, setGeneralError] = useState();
 
     const { register, handleSubmit, control, reset, getValues, setValue, formState: { errors }, onChange } = useForm({
         defaultValues: {
-            nombre: data? data.nombre : "",
+            nombre: data ? data.nombre : "",
             descripcion: data ? data.descripcion : "",
             precio: data ? data.precio : "",
             cantidad: data ? data.stock : "0",
-            categoria: data? (data.id_categoria ? { value: data.id_categoria, label: data.categoria } : "") : ""
+            categoria: data ? (data.id_categoria ? { value: data.id_categoria, label: data.categoria } : "") : ""
         },
-        resolver: yupResolver(validationSchema)
     });
 
     const handleCerrar = () => {
@@ -45,32 +37,33 @@ const ProductoModal = (props) => {
     }
 
     const createProducto = async (data) => {
-        try{
+        try {
             const response = await ProductoService.createProducto(data);
-            if(response){
+            if (response) {
                 return true;
             }
             return false;
-        }catch{
+        } catch {
             notifyError("No ha sido posible crear el producto.");
             return false;
         }
     }
 
     const updateProducto = async (data) => {
-        try{
+        try {
             const response = await ProductoService.updateProducto(data);
-            if(response){
+            if (response) {
                 return true;
             }
             return false;
-        }catch{
+        } catch {
             notifyError("No ha sido posible actualizar el producto.");
             return false;
         }
     }
 
     const handleUpdateRegister = async (formValue) => {
+        setLoadingGuardar(true);
         const {
             nombre: nombre_format,
             descripcion,
@@ -79,24 +72,23 @@ const ProductoModal = (props) => {
             categoria
         } = formValue;
         const nombre = nombre_format.split(" ").map((e) => capitalize(e)).join(" ");
-        const id = data? data.id : 0;
+        const id = data ? data.id : 0;
         const id_categoria = categoria.value;
         const send_data = {
-            id,nombre,descripcion,precio,stock,id_categoria
+            id, nombre, descripcion, precio, stock, id_categoria
         }
         let service = false;
-        setLoadingGuardar(true);
         if (!isEdit) {
             service = await createProducto(send_data);
             setLoadingGuardar(false)
-            if(service){
+            if (service) {
                 handleChange();
                 handleCerrar();
             }
         } else {
             service = await updateProducto(send_data);
             setLoadingGuardar(false)
-            if(service){
+            if (service) {
                 handleChange();
             }
         }
@@ -112,14 +104,13 @@ const ProductoModal = (props) => {
                 <Modal.Body>
                     <div className="form-group">
                         <label htmlFor="nombre">Nombre</label>
-                        <input id="nombre" {...register(`nombre`, { required: true })} type="text" className="form-control" style={inputStyle(errors.nombre)} maxLength={50}/>
-                        <ErrorMessage errors={errors.nombre} />
+                        <input id="nombre" {...register(`nombre`, { required: true })} type="text" className="form-control" style={inputStyle(errors.nombre)} maxLength={50} />
+                        {errors.nombre && (<ErrorMessage errors={errorsAdd.nombre} />)}
                     </div>
 
                     <div className="form-group mt-2">
                         <label htmlFor="descripcion">Descripción</label>
-                        <textarea id="descripcion" {...register(`descripcion`)} type="text" className="form-control" style={inputStyle(errors.descripcion)} maxLength={50}></textarea>
-                        <ErrorMessage errors={errors.descripcion} />
+                        <textarea id="descripcion" {...register(`descripcion`)} type="text" className="form-control" maxLength={50}></textarea>
                     </div>
 
                     <div className="form-group mt-2">
@@ -128,7 +119,7 @@ const ProductoModal = (props) => {
                             <span className="input-group-text">$</span>
                             <input {...register(`precio`, { required: true, onChange: (e) => { handleChangePrecio(e, setValue) } })} name="precio" type="text" className="form-control" style={inputStyle(errors.precio)} />
                         </div>
-                        <ErrorMessage errors={errors.precio} />
+                        {errors.precio && (<ErrorMessage errors={errorsAdd.precio} />)}
                     </div>
 
                     <div className="form-group mt-2">
@@ -137,7 +128,7 @@ const ProductoModal = (props) => {
                             <span className="input-group-text">$</span>
                             <input {...register(`cantidad`, { required: true, onChange: (e) => { handleChangeCantidad(e, setValue) } })} name="cantidad" type="text" className="form-control" style={inputStyle(errors.cantidad)} />
                         </div>
-                        <ErrorMessage errors={errors.precio} />
+                        {errors.cantidad && (<ErrorMessage errors={errorsAdd.cantidad} />)}
                     </div>
 
                     <div className="form-group mt-2">
@@ -161,9 +152,13 @@ const ProductoModal = (props) => {
                                 />
                             }
                         />
-                        <ErrorMessage errors={errors.categoria} />
+                        {errors.categoria && (<ErrorMessage errors={errorsAdd.categoria} />)}
                     </div>
-
+                    {generalError && (
+                        <div className="mt-3">
+                            <Alert tipo={"danger"}><ExclamationCircle /> {generalError}</Alert>
+                        </div>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="danger" onClick={() => handleCerrar()} disabled={loadingGuardar}>

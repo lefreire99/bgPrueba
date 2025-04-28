@@ -18,7 +18,6 @@ namespace bgPrueba.Server.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        //[Authorize(Roles = "USUARIO")]
         public IEnumerable<GetProducto> GetProductos()
         {
             return _productoService.GetProductos();
@@ -26,7 +25,7 @@ namespace bgPrueba.Server.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        //[Authorize(Roles = "DIRECTOR DE PROYECTO,ASISTENTE DE PROYECTO,COORDINADOR POA")]
+        [Authorize(Roles = "Admin,Guardalmacen")]
         public async Task<IActionResult> CreateProducto([FromBody] ProductoInterface model)
         {
             var res = await _productoService.CreateProducto(model);
@@ -39,7 +38,7 @@ namespace bgPrueba.Server.Controllers
 
         [HttpPut]
         [Route("[action]")]
-        //[Authorize(Roles = "DIRECTOR DE PROYECTO,ASISTENTE DE PROYECTO,COORDINADOR POA")]
+        [Authorize(Roles = "Admin,Guardalmacen")]
         public async Task<IActionResult> UpdateProducto([FromBody] ProductoInterface model)
         {
             var res = await _productoService.UpdateProducto(model);
@@ -52,6 +51,7 @@ namespace bgPrueba.Server.Controllers
 
         [HttpDelete]
         [Route("[action]/{id}")]
+        [Authorize(Roles = "Admin,Guardalmacen")]
         public async Task<IActionResult> DeleteProducto(int id)
         {
             var res = await _productoService.DeleteProducto(id);

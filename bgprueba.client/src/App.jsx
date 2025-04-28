@@ -8,13 +8,13 @@ import EventBus from "./common/EventBus.js";
 import Board from './components/Board';
 import AuthService from './Services/auth.service';
 import Producto from './components/Productos.jsx';
+import Movimientos from './components/productos_components/Movimientos.jsx';
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
-    console.log(user)
     if (user) {
       setCurrentUser(user);
     }
@@ -84,6 +84,7 @@ const App = () => {
             <>
                 <Route path="/panel" element={<Board />} />
                 <Route path="/panel/productos" element={<Producto />} />
+                <Route path="/panel/productos/movimientos/:id" element={<Movimientos />} />
             </>
             )}
         </Routes>

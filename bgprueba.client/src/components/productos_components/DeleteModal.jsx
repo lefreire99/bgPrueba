@@ -9,7 +9,6 @@ const DeleteModal = (props) => {
     const [loadingGuardar, setLoadingGuardar] = useState(false);
 
     const handleCerrar = () => {
-        reset();
         handleClose();
     }
 
@@ -28,7 +27,7 @@ const DeleteModal = (props) => {
 
     const handleDelete = async () => {
         setLoadingGuardar(true);
-        service = await deleteProducto(data.id);
+        const service = await deleteProducto(data.id);
         setLoadingGuardar(false)
         if (service) {
             handleChange();

@@ -1,3 +1,6 @@
+import { CircleFill } from "react-bootstrap-icons";
+import { formatStates } from "../utils/functions"
+
 export const renderers = {
     nombre: {
         label: "Nombre",
@@ -11,9 +14,12 @@ export const renderers = {
         label: "Categoría",
         render: (value) => <span>{value}</span>
     },
-    status: {
+    estado: {
         label: "Estado",
-        render: (value) => <span>{value}</span>
+        render: (value) => {
+            const { estado, color } = formatStates(value);
+            return <span className={color}><CircleFill size={8} /> {estado}</span>;
+        }
     }
 }
 

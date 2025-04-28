@@ -1,7 +1,8 @@
 import axios from "axios";
 import { instance } from "../common/Interceptor";
+import { authHeader } from "./auth.header";
 
-const API_URL = "http://localhost:5238/api/Producto/";
+const API_URL = import.meta.env.VITE_API_URL + "/api/Producto/";
 
 const getProductos = async () => {
     try {
@@ -32,7 +33,7 @@ const updateProducto = async (data) => {
 
 const deleteProducto = async (id) => {
     try {
-        const response = await instance.delete(`${API_URL}UpdateProducto/${id}`);
+        const response = await instance.delete(`${API_URL}DeleteProducto/${id}`);
         if (response) {
             return response.data;
         }

@@ -1,6 +1,7 @@
 ﻿using bgPrueba.Server.ActionModels;
 using bgPrueba.Server.Interfaces;
 using bgPrueba.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bgPrueba.Server.Controllers
@@ -18,7 +19,6 @@ namespace bgPrueba.Server.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        //[Authorize(Roles = "USUARIO")]
         public IEnumerable<OptionInterface> GetCategoriasOptions()
         {
             return _categoriaService.GetCategoriasOptions();
@@ -26,7 +26,7 @@ namespace bgPrueba.Server.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        //[Authorize(Roles = "DIRECTOR DE PROYECTO,ASISTENTE DE PROYECTO,COORDINADOR POA")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategoria([FromBody] CategoriaInterface model)
         {
             var res = await _categoriaService.CreateCategoria(model);

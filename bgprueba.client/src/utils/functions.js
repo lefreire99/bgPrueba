@@ -26,17 +26,7 @@ export const handleChangePrecio = (e, setVal) => {
     const dotCount = cleanedValue.split('.').length - 1;
     const formattedValue = dotCount > 1 ? cleanedValue.slice(0, -1) : cleanedValue;
 
-    const length = formattedValue.length;
-
-    if (length > 1 && formattedValue[0] == 0 && formattedValue[1] == ".") {
-        setVal(name, formattedValue);
-    } else if (length > 1 && formattedValue[0] == 0) {
-        setVal(name, formattedValue.substring(1));
-    } else if (length <= 1) {
-        setVal(name, '0');
-    } else {
-        setVal(name, formattedValue);
-    }
+    setVal(name, formattedValue);
 }
 
 export const handleChangeCantidad = (e, setVal) => {
@@ -57,5 +47,33 @@ export const handleChangeCantidad = (e, setVal) => {
 export const handleKeyPress = (e) => {
     if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
+    }
+}
+
+export const formatStates = (state) => {
+    switch (state) {
+        case "A":
+            return { estado: "Activo", color: "text-success" };
+        case "I":
+            return { estado: "Inactivo", color: "text-danger" };
+        default:
+            return { estado: "NE", color: "text-danger" };
+    }
+}
+
+export const formatStatesMovimiento = (state) => {
+    switch (state) {
+        case "E":
+            return { estado: "Registro de entrada", color: "text-success" };
+        case "S":
+            return { estado: "Registro de salida", color: "text-danger" };
+        case "I":
+            return { estado: "Corrección de entrada", color: "text-warning" };
+        case "O":
+            return { estado: "Corrección de salida", color: "text-info" };
+        case "A":
+            return { estado: "Actualización del total", color: "text-primary" };
+        default:
+            return { estado: "NE", color: "text-danger" };
     }
 }

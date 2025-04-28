@@ -76,7 +76,7 @@ namespace bgPrueba.Server.Services
                 }
                 else
                 {
-                    response.setError("No ha sido posible validar el usuario.");
+                    response.setError("No ha sido posible validar el usuario. Contraseña incorrecta.");
                 }
 
                 return response;

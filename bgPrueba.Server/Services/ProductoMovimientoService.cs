@@ -13,6 +13,44 @@ namespace bgPrueba.Server.Services
         {
             _applicationContext = applicationContext;
         }
+
+        public async Task<ObjectResponse> GetMovimientosByProductoId(int id)
+        {
+            ObjectResponse response = new ObjectResponse();
+            try
+            {
+                var producto_exist = await _applicationContext.Productos.FindAsync(id);
+                if(producto_exist == null)
+                {
+                    response.setError("Producto no encontrado.");
+                    return response;
+                }
+
+                var movimientos = (from movimiento in _applicationContext.ProductoMovimientos
+                                  where movimiento.Idproducto == producto_exist.Id
+                                  select new GetProductoMovimiento
+                                  {
+                                      tipo = movimiento.Tipo,
+                                      cantidad = movimiento.Cantidad,
+                                      fecha = movimiento.Fechacreacion.ToString("dd/MM/yyyy")
+                                  }).ToList();
+                var state = new
+                {
+                    producto = producto_exist.Nombre,
+                    movimientos = movimientos
+                };
+
+                response.setSuccess("Movimientos encontrados correctamente", state);
+                return response;
+
+            }
+            catch(Exception ex)
+            {
+                response.setError("Error en el servidor");
+                return response;
+            }
+        }
+
         public async Task<Response> RegisterEntradaSalida(ProductoMovimientoInterface model)
         {
             Response response = new Response();
