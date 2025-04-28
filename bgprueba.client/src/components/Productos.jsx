@@ -11,6 +11,7 @@ import CategoriaService from "../Services/categoria.service";
 import ProductoModal from "./productos_components/ProductoModal";
 import DeleteModal from "./productos_components/DeleteModal";
 import { useNavigate } from "react-router";
+import { formatStates } from "../utils/functions";
 
 const Producto = (props) => {
 
@@ -198,18 +199,12 @@ export const ProductoFilter = (props) => {
             const pre = precio.toLowerCase().trim();
             const cat = categoria.toLowerCase().trim();
             const est = estado.toLowerCase().trim();
-            let final_est = "";
-            if (est == "inactivo") {
-                final_est = "i";
-            } else if (est == "activo") {
-                final_est = "a"
-            }
 
             setFilter(listItems.filter(u =>
-                u.nombre.toString().toLowerCase().includes(nom) &&
+                u.nombre.toLowerCase().includes(nom) &&
                 u.precio.toString().toLowerCase().includes(pre) &&
                 u.categoria.toLowerCase().includes(cat) &&
-                u.estado.toLowerCase().includes(final_est)
+                formatStates(u.estado).estado.toLowerCase().includes(est)
             ))
         }
     }, [nombre, precio, categoria, estado, listItems, hasChanged])

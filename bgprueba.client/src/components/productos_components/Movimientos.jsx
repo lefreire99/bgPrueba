@@ -8,6 +8,7 @@ import { headers, renderers } from "./movimiento-info";
 import MovimientoService from "../../Services/movimiento.service";
 import MovimientoModal from "./MovimientoModal";
 import { useParams } from "react-router";
+import { formatStatesMovimiento } from "../../utils/functions";
 
 const Movimientos = (props) => {
 
@@ -52,13 +53,14 @@ const Movimientos = (props) => {
     }, [hasChanged])
 
     const shouldInclude = e => (
-        e.tipo.toLowerCase().includes(filterText.toLowerCase()) ||
-        e.cantidad.toLowerCase().includes(filterText.toLowerCase()) ||
+        formatStatesMovimiento(e.tipo).estado.toLowerCase().includes(filterText.toLowerCase()) ||
+        e.cantidad.toString().includes(filterText.toLowerCase()) ||
         e.fecha.toLowerCase().includes(filterText.toLowerCase())
     )
 
     useEffect(() => {
         if (listMovimientos) {
+            console.log(listMovimientos)
             setFilter(listMovimientos.filter(shouldInclude))
         }
     }, [filterText, listMovimientos, hasChanged])
@@ -70,10 +72,10 @@ const Movimientos = (props) => {
             <h4>Historial de movimientos del producto: {producto}</h4>
             <div className="mt-3">
                 <div className="d-flex flex-column flex-md-row" role="search">
-                    <input className="form-control me-auto w-50" type="text" placeholder='Filtrar'
+                    <input className="form-control me-auto w-100 w-md-50 mb-2" type="text" placeholder='Filtrar'
                         value={filterText}
                         onChange={(e) => setFilterText(e.target.value)} aria-label="Search" />
-                    <button className="btn btn-primary" type="button" onClick={() => { setShowModal(true) }}><PlusCircle /> Registrar Movimiento</button>
+                    <button className="btn btn-primary mb-2" type="button" onClick={() => { setShowModal(true) }}><PlusCircle /> Registrar Movimiento</button>
                 </div>
             </div>
             <div className="mt-3">
